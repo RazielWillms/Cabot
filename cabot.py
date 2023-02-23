@@ -8,15 +8,25 @@ from selenium.webdriver.chrome.service import Service
 
 servico = Service(ChromeDriverManager().install())
 navegador = webdriver.Chrome(service=servico)
-time.sleep(20)
-open('cursos.txt','a') 
-open('turmas.txt','a') 
-open('disciplinas.txt','a') 
 
+navegador.get('https://unintese.sistemasiga.net/login')
+
+#xpaths para chegarmos na área de lançamento de notas
+navegador.find_element('xpath','/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+navegador.find_element('xpath','/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
+navegador.find_element('xpath','/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
+navegador.find_element('xpath','//*[@id="login-btn"]/i').click()
+navegador.find_element('xpath','//*[@id="noprint"]/li[20]/a').click()
+time.sleep(2)
+navegador.find_element('xpath','//*[@id="noprint"]/li[20]/ul/li[2]/a').click()
+
+a=open('cursos.txt','a') 
+a=open('turmas.txt','a') 
+a=open('disciplinas.txt','a') 
+a.close()
 
 #devem retornar os ID´s que ainda não foram utilizados, estudar selenium para tentar gerar o arquivo a partir do formulário exibido no SIGA
 def ler_cursos():
-    form = driver.find_element_by_xpath("//form[@action='" + formName + "']")
     z = open('cursos.txt','r+')
     cursoid=z.readlines()
     print(cursoid)
@@ -43,3 +53,5 @@ pyautogui.click(1291, 288)
 pyautogui.write(x)
 time.sleep(1)
 pyautogui.press('enter')
+
+time.sleep(50)
