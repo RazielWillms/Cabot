@@ -1,4 +1,4 @@
-#Cabot- automação acadêmica para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
+#Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
 import pyautogui
 import time
 import os
@@ -6,8 +6,13 @@ import os
 #devem retornar os ID´s que ainda não foram utilizados
 def ler_cursos():
     z = open('cursos.txt','r+')
-    cursoid=z.read(3)
+    cursoid=z.readlines()
+    print(cursoid)
+    cursoid=[x.strip('\n') for x in cursoid]
+    print(cursoid)
     z.close()
+    for linha in cursoid:
+        print(linha)
     return cursoid
 
 def ler_turmas():
