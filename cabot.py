@@ -12,8 +12,8 @@ navegador = webdriver.Chrome(service=servico)
 navegador.get('https://unintese.sistemasiga.net/login')
 
 # xpaths para chegarmos na área de lançamento de notas
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
 navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
 navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
 navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
