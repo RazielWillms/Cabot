@@ -2,9 +2,21 @@
 import pyautogui
 import time
 import os
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+
+servico = Service(ChromeDriverManager().install())
+navegador = webdriver.Chrome(service=servico)
+time.sleep(20)
+open('cursos.txt','a') 
+open('turmas.txt','a') 
+open('disciplinas.txt','a') 
+
 
 #devem retornar os ID´s que ainda não foram utilizados, estudar selenium para tentar gerar o arquivo a partir do formulário exibido no SIGA
 def ler_cursos():
+    form = driver.find_element_by_xpath("//form[@action='" + formName + "']")
     z = open('cursos.txt','r+')
     cursoid=z.readlines()
     print(cursoid)
