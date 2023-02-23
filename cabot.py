@@ -3,7 +3,7 @@ import pyautogui
 import time
 import os
 
-#devem retornar os ID´s que ainda não foram utilizados
+#devem retornar os ID´s que ainda não foram utilizados, estudar selenium para tentar gerar o arquivo a partir do formulário exibido no SIGA
 def ler_cursos():
     z = open('cursos.txt','r+')
     cursoid=z.readlines()
