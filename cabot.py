@@ -20,9 +20,15 @@ navegador.find_element('xpath','//*[@id="noprint"]/li[20]/a').click()
 time.sleep(2)
 navegador.find_element('xpath','//*[@id="noprint"]/li[20]/ul/li[2]/a').click()
 
+
+
+
 a=open('cursos.txt','a') 
-a=open('turmas.txt','a') 
-a=open('disciplinas.txt','a') 
+#a=open('turmas.txt','a') 
+#a=open('disciplinas.txt','a') 
+navegador.find_element('xpath','//*[@id="curso_chosen"]/a/span').click()
+z= navegador.find_element('xpath','/html/body/div[3]/div[2]/div/form/fieldset/div[1]/div/div/div/ul')
+print(z)
 a.close()
 
 #devem retornar os ID´s que ainda não foram utilizados, estudar selenium para tentar gerar o arquivo a partir do formulário exibido no SIGA
