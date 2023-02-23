@@ -1,0 +1,37 @@
+#Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
+import pyautogui
+import time
+import os
+
+pyautogui.click(1291, 397)
+pyautogui.write('264')
+time.sleep(1)
+pyautogui.press('enter')
+time.sleep(1)
+pyautogui.click(1291, 465)
+pyautogui.write('2914')
+time.sleep(1)
+pyautogui.press('enter')
+time.sleep(1)
+pyautogui.click(1291, 598)
+pyautogui.write('12')
+time.sleep(1)
+pyautogui.press('enter')
+time.sleep(1)
+#carregar média
+pyautogui.click(1291, 752)
+time.sleep(3)
+pyautogui.click(1141, 836)
+time.sleep(5)
+pyautogui.click(1650, 240)
+time.sleep(5)
+#recalcular
+pyautogui.click(1038, 626)
+pyautogui.click(1756, 963)
+pyautogui.scroll(-1000)
+time.sleep(3)
+pyautogui.click(1336, 738)
+time.sleep(1)
+pyautogui.click(1583, 301)
+time.sleep(3)
+pyautogui.click(1859, 125)
