@@ -1,9 +1,8 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
-import pyautogui
 import time
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
@@ -30,21 +29,18 @@ a.close()
 # Lógica de 'puxada de nota'
 curso = open('cursos.txt', 'r')
 cursoid = curso.readlines()
-contadorc = 0
-contadort = 0
-contadord = 0
+contadorc = 2
 
 for x in cursoid:
-    contadorc = contadorc+1
+    time.sleep(1)
     navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
-    #navegador.find_element('xpath','//*[@id="curso_chosen"]/div/div/input').send_keys(cursoid[contadorc])
-    pyautogui.write(cursoid[contadorc])
+    time.sleep(1)
+    navegador.find_element('xpath', '//*[@id="curso_chosen"]/div/div/input').send_keys(cursoid[contadorc])
     time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(5)
-
+    contadorc = contadorc + 1
     # extração do texto do elemento turmas
     navegador.find_element('xpath', '//*[@id="turma_chosen"]/a').click()
+    time.sleep(1)
     elementoturma = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/ul').get_attribute("innerText")
     b = open('turmas.txt', 'w')
     b.write(elementoturma)
@@ -53,15 +49,40 @@ for x in cursoid:
     turma = open('turmas.txt', 'r')
     turmaid = turma.readlines()
     # inserir lógica para remoção das sentenças que denominam se a turma é ativa ou não
+    contadort = 1
     for y in turmaid:
         time.sleep(1)
-        contadort = contadort+1
         navegador.find_element('xpath', '//*[@id="turma_chosen"]/a').click()
-        #navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input').send_keys(turmaid[contadort])
-        pyautogui.write(turmaid[contadort])
-        time.sleep(2)
-        pyautogui.press('enter')
-        time.sleep(500)
-else:
-    print('nenhum curso cadastrado')
-    time.sleep(500)
+        time.sleep(1)
+        navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input').send_keys(turmaid[contadort])
+        contadort = contadort + 1
+        # extração do texto do elemento disciplinas
+        navegador.find_element('xpath', '//*[@id="disciplina_chosen"]').click()
+        time.sleep(1)
+        elementodisciplina = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
+            get_attribute("innerText")
+        c = open('disciplinas.txt', 'w')
+        c.write(elementodisciplina)
+        c.close()
+        time.sleep(1)
+        disc = open('disciplinas.txt', 'r')
+        discid = disc.readlines()
+        contadord = 0
+        for z in discid:
+            print(len(discid))
+            time.sleep(1)
+            navegador.find_element('xpath', '//*[@id="disciplina_chosen"]').click()
+            time.sleep(1)
+            navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input').\
+                send_keys(discid[contadord])
+            time.sleep(1)
+            navegador.find_element('xpath', '//*[@id="carregarNotas"]').click()
+            time.sleep(5)
+            navegador.find_element('xpath', '/html/body/div[6]/div/div/a').click()
+            time.sleep(1)
+            print(contadord)
+            if contadord <= len(discid):
+                contadord = contadord + 1
+            else:
+                break
+time.sleep(5)
