@@ -37,7 +37,6 @@ for x in cursoid:
     time.sleep(1)
     navegador.find_element('xpath', '//*[@id="curso_chosen"]/div/div/input').send_keys(cursoid[contadorc])
     time.sleep(2)
-    contadorc = contadorc + 1
     # extração do texto do elemento turmas
     navegador.find_element('xpath', '//*[@id="turma_chosen"]/a').click()
     time.sleep(1)
@@ -50,12 +49,15 @@ for x in cursoid:
     turmaid = turma.readlines()
     # inserir lógica para remoção das sentenças que denominam se a turma é ativa ou não
     contadort = 1
+    if contadorc <= len(cursoid):
+        contadorc = contadorc + 1
+    else:
+        break
     for y in turmaid:
         time.sleep(1)
         navegador.find_element('xpath', '//*[@id="turma_chosen"]/a').click()
         time.sleep(1)
         navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input').send_keys(turmaid[contadort])
-        contadort = contadort + 1
         # extração do texto do elemento disciplinas
         navegador.find_element('xpath', '//*[@id="disciplina_chosen"]').click()
         time.sleep(1)
@@ -68,6 +70,10 @@ for x in cursoid:
         disc = open('disciplinas.txt', 'r')
         discid = disc.readlines()
         contadord = 0
+        if contadort <= len(turmaid):
+            contadort = contadort + 1
+        else:
+            break
         for z in discid:
             print(len(discid))
             time.sleep(1)
@@ -80,7 +86,6 @@ for x in cursoid:
             time.sleep(5)
             navegador.find_element('xpath', '/html/body/div[6]/div/div/a').click()
             time.sleep(1)
-            print(contadord)
             if contadord <= len(discid):
                 contadord = contadord + 1
             else:
