@@ -3,6 +3,9 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
@@ -11,13 +14,14 @@ navegador = webdriver.Chrome(service=servico)
 navegador.get('https://unintese.sistemasiga.net/login')
 
 # xpaths para chegarmos na área de lançamento de notas
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
 navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
 navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
 navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
-time.sleep(2)
-navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/ul/li[2]/a').click()
+wait = WebDriverWait(navegador, 300)
+mediasfinais = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/li[20]/ul/li[2]/a')))
+mediasfinais.click()
 
 # extração do texto do elemento Cursos
 navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
@@ -30,6 +34,7 @@ a.close()
 curso = open('cursos.txt', 'r')
 cursoid = curso.readlines()
 contadorc = 2
+
 
 for x in cursoid:
     time.sleep(1)
@@ -83,8 +88,10 @@ for x in cursoid:
                 send_keys(discid[contadord])
             time.sleep(1)
             navegador.find_element('xpath', '//*[@id="carregarNotas"]').click()
-            time.sleep(5)
-            navegador.find_element('xpath', '/html/body/div[6]/div/div/a').click()
+            # time.sleep(5)
+            element = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
+            element.click()
+            # navegador.find_element('xpath', '/html/body/div[6]/div/div/a').click()
             time.sleep(1)
             if contadord <= len(discid):
                 contadord = contadord + 1
