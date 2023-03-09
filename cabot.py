@@ -6,7 +6,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
+# import pyautogui
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
@@ -14,8 +15,8 @@ navegador = webdriver.Chrome(service=servico)
 
 # xpaths para chegarmos na área de lançamento de notas
 navegador.get('https://unintese.sistemasiga.net/login')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
 navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
 navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
 navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
@@ -93,7 +94,9 @@ for x in cursoid:
             navegador.find_element('xpath', '//*[@id="carregarNotas"]').click()
             time.sleep(5)
             # botão importar notas
-            navegador.find_element('xpath', '/html/body/div[3]').click()
+            navegador.switchTo().frame(navegador.find_element(By.ID("fancybox-frame1678367213059")))
+            navegador.find_element(By.XPATH("/html/body/div[3]/div/div/form/fieldset/a")).click()
+            navegador.switchTo().defaultContent()
             time.sleep(20)
             # botão fechar janela para voltar ao loop
             fechar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
@@ -103,4 +106,5 @@ for x in cursoid:
                 contadord = contadord + 1
             else:
                 break
+
 time.sleep(5)
