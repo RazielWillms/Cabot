@@ -55,7 +55,7 @@ for x in cursoid:
     turma = open('turmas.txt', 'r')
     turmaid = turma.readlines()
     # inserir lógica para remoção das sentenças que denominam se a turma é ativa ou não
-    contadort = 3
+    contadort = 1
     if contadorc <= len(cursoid):
         contadorc = contadorc + 1
     else:
@@ -89,8 +89,8 @@ for x in cursoid:
             navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input').\
                 send_keys(discid[contadord])
             # botão carregar nota
-            carregarnota = wait.until(ec.element_to_be_clickable(navegador.find_element('xpath', '//*['
-                                                                                                 '@id="carregarNotas"]')))
+            carregarnota = wait.until(ec.element_to_be_clickable(navegador.find_element('xpath', '//*[''@id'
+                                                                                                 '="carregarNotas"]')))
             carregarnota.click()
             # botão importar notas
             wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
@@ -101,12 +101,16 @@ for x in cursoid:
             wait.until(ec.alert_is_present(), 'O alerta não apareceu')
             alert = navegador.switch_to.alert
             alert.accept()
-            time.sleep(20)
             # uncheck de checkbox to recalculate
-            pass
+            recalcular = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset'
+                                                                          '/input')))
+            recalcular.click()
+            time.sleep(20)
             # wait to checkbox reverse be clickable
             pass
             # save btn
+            pass
+            # confirm save btn
             pass
             # botão fechar janela para voltar ao loop
             navegador.switch_to.default_content()
