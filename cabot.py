@@ -14,9 +14,10 @@ servico = Service(ChromeDriverManager().install())
 navegador = webdriver.Chrome(service=servico)
 
 # xpaths para chegarmos na área de lançamento de notas
+navegador.maximize_window()
 navegador.get('https://unintese.sistemasiga.net/login')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
 navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
 navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
 navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
@@ -92,13 +93,21 @@ for x in cursoid:
             time.sleep(1)
             # botão carregar nota
             navegador.find_element('xpath', '//*[@id="carregarNotas"]').click()
-            time.sleep(5)
+            time.sleep(2)
             # botão importar notas
-            navegador.switchTo().frame(navegador.find_element(By.ID("fancybox-frame1678367213059")))
-            navegador.find_element(By.XPATH("/html/body/div[3]/div/div/form/fieldset/a")).click()
-            navegador.switchTo().defaultContent()
-            time.sleep(20)
+            navegador.switch_to.frame(0)
+            importar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset/a')))
+            importar.click()
+            # pop-up ok
+            pass
+            # uncheck de checkbox recalculate
+            pass
+            # wait to be clickable checkbox reverse
+            pass
+            # save btn
+            pass
             # botão fechar janela para voltar ao loop
+            navegador.switch_to.default_content()
             fechar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
             fechar.click()
             time.sleep(1)
