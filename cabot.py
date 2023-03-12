@@ -20,105 +20,112 @@ navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select
 navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
 navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
 wait = WebDriverWait(navegador, 300)
-mediasfinais = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/li[20]/ul/li[2]/a')))
-mediasfinais.click()
+elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/li[20]/ul/li[2]/a')))
+elemento.click()
 
 # extração do texto do elemento Cursos
 navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
 time.sleep(1)
-elementocurso = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+elemento = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
 a = open('cursos.txt', 'w')
-a.write(elementocurso)
+a.write(elemento)
 a.close()
 
 # Lógica de 'puxada de nota'
 curso = open('cursos.txt', 'r')
 cursoid = curso.readlines()
-contadorc = 2
+contadorc = 2  # padrão (1)
 
 
 for x in cursoid:
-    selecaocurso = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="curso_chosen"]/a')))
-    selecaocurso.click()
+    elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="curso_chosen"]/a')))
+    elemento.click()
     time.sleep(1)
     navegador.find_element('xpath', '//*[@id="curso_chosen"]/div/div/input').send_keys(cursoid[contadorc])
     time.sleep(1)
     # extração do texto do elemento turmas
-    turmas = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
-    turmas.click()
+    elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
+    elemento.click()
     time.sleep(1)
-    elementoturma = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/ul').get_attribute("innerText")
+    elemento = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/ul').get_attribute("innerText")
     b = open('turmas.txt', 'w')
-    b.write(elementoturma)
+    b.write(elemento)
     b.close()
     time.sleep(1)
     turma = open('turmas.txt', 'r')
     turmaid = turma.readlines()
     # inserir lógica para remoção das sentenças que denominam se a turma é ativa ou não
-    contadort = 1
+    pass
+    contadort = 1  # padrão (1)
     if contadorc <= len(cursoid):
         contadorc = contadorc + 1
     else:
         break
     for y in turmaid:
-        selecaoturma = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
-        selecaoturma.click()
+        elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
+        elemento.click()
         time.sleep(1)
         navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input').send_keys(turmaid[contadort])
         # extração do texto do elemento disciplinas
-        disciplinas = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
-        disciplinas.click()
+        elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
+        elemento.click()
         time.sleep(1)
-        elementodisciplina = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
+        elemento = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
             get_attribute("innerText")
         c = open('disciplinas.txt', 'w')
-        c.write(elementodisciplina)
+        c.write(elemento)
         c.close()
         time.sleep(1)
         disc = open('disciplinas.txt', 'r')
         discid = disc.readlines()
-        contadord = 0
+        contadord = -1  # padrão (-1)
         if contadort <= len(turmaid):
             contadort = contadort + 1
         else:
             break
         for z in discid:
-            selecaodisciplina = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
-            selecaodisciplina.click()
-            time.sleep(1)
-            navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input').\
-                send_keys(discid[contadord])
-            # botão carregar nota
-            carregarnota = wait.until(ec.element_to_be_clickable(navegador.find_element('xpath', '//*[''@id'
-                                                                                                 '="carregarNotas"]')))
-            carregarnota.click()
-            # botão importar notas
-            wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
-            navegador.switch_to.frame(0)
-            importar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset/a')))
-            importar.click()
-            # pop-up ok
-            wait.until(ec.alert_is_present(), 'O alerta não apareceu')
-            alert = navegador.switch_to.alert
-            alert.accept()
-            # uncheck de checkbox to recalculate
-            recalcular = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset'
-                                                                          '/input')))
-            recalcular.click()
-            time.sleep(20)
-            # wait to checkbox reverse be clickable
-            pass
-            # save btn
-            pass
-            # confirm save btn
-            pass
-            # botão fechar janela para voltar ao loop
-            navegador.switch_to.default_content()
-            fechar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
-            fechar.click()
-            time.sleep(1)
             if contadord <= len(discid):
                 contadord = contadord + 1
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
+                elemento.click()
+                time.sleep(1)
+                elemento.click()
+                time.sleep(1)
+                navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input'). \
+                    send_keys(discid[contadord])
+                # botão carregar nota
+                elemento = wait.until(ec.element_to_be_clickable(navegador.
+                                                                 find_element('xpath', '//*[''@id''="carregarNotas"]')))
+                elemento.click()
+                # botão importar notas
+                wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
+                navegador.switch_to.frame(0)
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH,
+                                                                  '/html/body/div[3]/div/div/form/fieldset/a')))
+                elemento.click()
+                # pop-up ok
+                wait.until(ec.alert_is_present(), 'O alerta não apareceu')
+                elemento = navegador.switch_to.alert
+                elemento.accept()
+                # uncheck de checkbox to recalculate
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset'
+                                                                            '/input')))
+                elemento.click()
+                # wait to checkbox reverse be clickable
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="btnLancado"]')))
+                elemento.click()
+                # conferir todas as checkbox para deixá-las marcadas, usar navegador.find_element().is_selected()
+                # save btn
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/button')))
+                elemento.click()
+                # confirm save btn
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[5]/div[2]/a[1]')))
+                elemento.click()
+                # botão fechar janela para voltar ao loop
+                navegador.switch_to.default_content()
+                elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
+                elemento.click()
+                time.sleep(1)
             else:
                 break
 
