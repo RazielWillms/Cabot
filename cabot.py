@@ -6,8 +6,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-# from selenium.webdriver.common.keys import Keys
-# import pyautogui
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
@@ -57,7 +55,7 @@ for x in cursoid:
     turma = open('turmas.txt', 'r')
     turmaid = turma.readlines()
     # inserir lógica para remoção das sentenças que denominam se a turma é ativa ou não
-    contadort = 1
+    contadort = 3
     if contadorc <= len(cursoid):
         contadorc = contadorc + 1
     else:
@@ -90,19 +88,23 @@ for x in cursoid:
             time.sleep(1)
             navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input').\
                 send_keys(discid[contadord])
-            time.sleep(1)
             # botão carregar nota
-            navegador.find_element('xpath', '//*[@id="carregarNotas"]').click()
-            time.sleep(2)
+            carregarnota = wait.until(ec.element_to_be_clickable(navegador.find_element('xpath', '//*['
+                                                                                                 '@id="carregarNotas"]')))
+            carregarnota.click()
             # botão importar notas
+            wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
             navegador.switch_to.frame(0)
             importar = wait.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset/a')))
             importar.click()
             # pop-up ok
+            wait.until(ec.alert_is_present(), 'O alerta não apareceu')
+            alert = navegador.switch_to.alert
+            alert.accept()
+            time.sleep(20)
+            # uncheck de checkbox to recalculate
             pass
-            # uncheck de checkbox recalculate
-            pass
-            # wait to be clickable checkbox reverse
+            # wait to checkbox reverse be clickable
             pass
             # save btn
             pass
