@@ -38,12 +38,10 @@ def puxarnota():
     a = open('cursos.txt', 'w')
     a.write(elemento)
     a.close()
-    # Lógica de 'puxada de nota'
+    # Inicio Lógica de 'puxada de nota'
     curso = open('cursos.txt', 'r')
     cursoid = curso.readlines()
     contadorcurso = 0  # padrão (0)
-    contadorturma = 0  # padrão (0)
-    contadordisciplina = 0  # padrão (0)
 
     # verificar arquivo bkp e setar x na posição de onde parou ou pular, a ideia é registrar quais cursos já foram
     # puxados e continuar de onde parou em caso de erro. Vou fazer apenas com o Curso já que é o laço maior, se for
@@ -52,14 +50,12 @@ def puxarnota():
     print("arquivo criado")
     os.remove('bkpCurso.txt')
     print("arquivo removido")
-    time.sleep(10)
 
     for x in cursoid:
         d = open('bkpCurso.txt', 'w')
         d.write(x)
         d.close()
         if contadorcurso < len(cursoid):
-            contadorcurso = contadorcurso + 1
             elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="curso_chosen"]/a')))
             elemento.click()
             time.sleep(1)
@@ -79,11 +75,12 @@ def puxarnota():
             time.sleep(1)
             turma = open('turmas.txt', 'r')
             turmaid = turma.readlines()
+            contadorcurso = contadorcurso + 1
         else:
             break
+        contadorturma = 0  # padrão (0)
         for y in turmaid:
             if contadorturma < len(turmaid):
-                contadorturma = contadorturma + 1
                 elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
                 elemento.click()
                 time.sleep(1)
@@ -104,9 +101,10 @@ def puxarnota():
                 time.sleep(1)
                 disc = open('disciplinas.txt', 'r')
                 discid = disc.readlines()
+                contadorturma = contadorturma + 1
             else:
-                contadorturma = 0
                 break
+            contadordisciplina = 0  # padrão (0)
             for z in discid:
                 if contadordisciplina < len(discid):
                     elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
@@ -162,7 +160,6 @@ def puxarnota():
                     time.sleep(1)
                     contadordisciplina = contadordisciplina + 1
                 else:
-                    contadordisciplina = 0
                     break
 
 
@@ -173,9 +170,13 @@ os.remove('bkpCurso.txt')
 # Criar encerramento da rotina, questionando se o usuário deseja realizar novamente.
 recomecar = input("O programa concluiu com êxito o lançamento de notas no sistema SIGA, deseja fazer a importação e "
                   "lançamento de notas novamente? (1-sim) (2-não)")
-if recomecar == 1 or "sim":
+if recomecar == 1:
     puxarnota()
-else:
+elif recomecar == 2:
     print("Certo, até mais!")
+    time.sleep(5)
+    exit()
+else:
+    print("Comando não identificado, caso deseje refazer o procedimento inicie novamente o programa.")
     time.sleep(5)
     exit()
