@@ -73,7 +73,7 @@ def puxarnota():
                 elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="disciplina_chosen"]')))
                 elemento.click()
                 time.sleep(1)
-                elemento = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul').\
+                elemento = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
                     get_attribute("innerText")
                 c = open('disciplinas.txt', 'w')
                 c.write(elemento)
@@ -164,7 +164,6 @@ def painel():
     # def responsável pela alteração do arquivo na pasta raiz do Cabot
     def alterartxt():
         entradateclado = selecionados.get("1.0", "end-1c")
-        print(entradateclado)
         txtentrada = open('cursos.txt', 'w')
         txtentrada.write(entradateclado)
         txtentrada.close()
@@ -178,49 +177,63 @@ def painel():
         arquivoatualizado.write(elementocursosatualizado)
         arquivoatualizado.close()
         # atualização do campo visual
-        Label(janela, text="Cursos encontrados:", bg="lightgrey").grid(row=1, column=3, padx=5, pady=5, sticky=E)
-        atualizado = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
-        atualizado.insert(END, elementocursosatualizado)
-        encontrados.destroy()
-        atualizado.grid(row=2, column=3, padx=5, pady=5)
+        selecionados.destroy()
+        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=3)
+        selecionados.insert(END, elementocursosatualizado)
+        selecionados.grid(row=2, column=1, padx=5, pady=5)
 
-    # inicio da janela
+    def puxartxttodos():
+        # nova extração do texto do elemento Cursos
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+        arquivoatualizado = open('cursos.txt', 'w')
+        arquivoatualizado.write(elementocursosatualizado)
+        arquivoatualizado.close()
+        # atualização do campo visual
+        selecionados.destroy()
+        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=3)
+        selecionados.insert(END, elementocursosatualizado)
+        selecionados.grid(row=2, column=1, padx=5, pady=5)
+        puxarnota()
+
+    # inicio da janela/configurações
     janela = Tk()
     janela.title("Painel Cabot")
     janela.minsize(500, 300)  # width x height, define o tamanho mínimo da janela, pra facilitar a visualização
     janela.config(bg="lightgrey")
 
     # inicio disposição dos elementos no grid
-    texto_info = Label(janela, text="Modo Edição. Escolha os cursos para o sistema puxar nota", bg="lightgrey")
-    texto_info.grid(row=0, column=1, columnspan=4, padx=5, pady=5)
+    # imagem logo Cabot
+    # Setting it up
+    img = PhotoImage(file="resources/logo.png")
+    logoimg = Label(janela, image=img)
+    logoimg.grid(row=0, column=1, padx=5, pady=5)
 
-    # Nome da label e entrada de info
-    Label(janela, text="Cursos que deseja:", bg="lightgrey").grid(row=1, column=1, padx=5, pady=5, sticky=W)
+    # txt com cursos encontrados no SIGA
     selecionados = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
+    selecionados.insert(END, elementocursos)
     selecionados.grid(row=2, column=1, padx=5, pady=5)
 
-    Label(janela, text="<- Escolha os cursos e cole aqui", bg="lightgrey").grid(row=2, column=2, padx=5, pady=5,
-                                                                                sticky=E)
+    # 1º botão
+    botaopuxar = Button(janela, text="Puxar nota parcial", command=alterartxt, bg="green", fg="white",
+                        font="Helvetica 9 bold", width=18)
+    botaopuxar.grid(column=1, row=5, sticky=W, padx=5, pady=2)
+    # 2º botão
+    botaotudo = Button(janela, text="Puxar nota completa", command=puxartxttodos, bg="black", fg="white",
+                       font="Helvetica 9 bold", width=18)
+    botaotudo.grid(column=1, row=6, sticky=W, padx=5, pady=2)
+    # 3º botão
+    botaofechar = Button(janela, text="  Fechar Sistema  ", command=sair, bg="red",
+                         fg="white", font="Helvetica 9 bold", width=18)
+    botaofechar.grid(column=1, row=7, sticky=W, padx=5, pady=2)
+    # 4º botão
+    botaoatualizar = Button(janela, text="Atualizar lista", command=atualizartxttodos,
+                            bg="lightgrey", fg="black", font="Helvetica 9 bold", width=15)
+    botaoatualizar.grid(column=1, row=5, sticky=E, padx=5, pady=2)
 
-    Label(janela, text="Cursos encontrados:", bg="lightgrey").grid(row=1, column=3, padx=5, pady=5, sticky=E)
-    encontrados = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
-    encontrados.insert(END, elementocursos)
-    encontrados.grid(row=2, column=3, padx=5, pady=5)
-
-    # botões
-    botaopuxar = Button(janela, text="Puxar nota destes cursos", command=alterartxt, bg="lightgreen", fg="white",
-                        font="Helvetica 9 bold")
-    botaopuxar.grid(column=1, row=5)
-    botaofechar = Button(janela, text="Fechar Sistema", command=sair, bg="red", fg="white", font="Helvetica 9 bold")
-    botaofechar.grid(column=2, row=6)
-    botaotudo = Button(janela, text="Puxar nota de todos", command=puxarnota, bg="black", fg="white",
-                       font="Helvetica 9 bold")
-    botaotudo.grid(column=3, row=5)
-    botaoatualizar = Button(janela, text="Atualizar", command=atualizartxttodos,
-                            bg="lightgrey", fg="black", font="Helvetica 9 bold")
-    botaoatualizar.grid(column=3, row=6)
-
-    Label(janela, text="Criado por: Raziel Haas Willms", bg="lightgrey").grid(row=6, column=3, padx=5, pady=5, sticky=E)
+    # assinatura
+    Label(janela, text="Criado por: Raziel Haas Willms", font="Helvetica 6 bold",
+          bg="lightgrey").grid(row=7, column=1, padx=5, pady=5, sticky=E)
 
     janela.mainloop()  # responsável por manter a janela aberta
 
