@@ -1,5 +1,4 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
-import os
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -8,53 +7,34 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
+from tkinter import *
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
 navegador = webdriver.Chrome(service=servico)
+wait = WebDriverWait(navegador, 300)  # define o tempo máximo que o sistema aguardará
 
-# xpaths para chegarmos na área de lançamento de notas
-navegador.maximize_window()
-navegador.get('https://unintese.sistemasiga.net/login')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
-navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
-navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
-navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
-wait = WebDriverWait(navegador, 300)
-elementoLancamento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/li[20]/ul/li[2]/a')))
-elementoLancamento.click()
 
-# Criação do arquivo de Backup
-bkp = open('bkpCurso.txt', 'w')
-bkp.close()
+def caminhoinicial():
+    # xpaths para chegarmos na área de lançamento de notas
+    navegador.maximize_window()
+    navegador.get('https://unintese.sistemasiga.net/login')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
+    navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
+    navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
+    elementolancamento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="noprint"]/li[20]/ul/li[2]/a')))
+    elementolancamento.click()
 
 
 def puxarnota():
-    # extração do texto do elemento Cursos
-    navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
-    time.sleep(1)
-    elemento = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
-    a = open('cursos.txt', 'w')
-    a.write(elemento)
-    a.close()
     # Inicio Lógica de 'puxada de nota'
     curso = open('cursos.txt', 'r')
     cursoid = curso.readlines()
     contadorcurso = 0  # padrão (0)
 
-    # verificar arquivo bkp e setar x na posição de onde parou ou pular, a ideia é registrar quais cursos já foram
-    # puxados e continuar de onde parou em caso de erro. Vou fazer apenas com o Curso já que é o laço maior, se for
-    # fácil de implementar posso adicionar nos demais também.
-
-    print("arquivo criado")
-    os.remove('bkpCurso.txt')
-    print("arquivo removido")
-
     for x in cursoid:
-        d = open('bkpCurso.txt', 'w')
-        d.write(x)
-        d.close()
         if contadorcurso < len(cursoid):
             elemento = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="curso_chosen"]/a')))
             elemento.click()
@@ -161,22 +141,81 @@ def puxarnota():
                     contadordisciplina = contadordisciplina + 1
                 else:
                     break
+    curso.close()
 
 
-# inicio do programa
-puxarnota()
-# setar bkp como vazio ou excluí-lo
-os.remove('bkpCurso.txt')
-# Criar encerramento da rotina, questionando se o usuário deseja realizar novamente.
-recomecar = input("O programa concluiu com êxito o lançamento de notas no sistema SIGA, deseja fazer a importação e "
-                  "lançamento de notas novamente? (1-sim) (2-não)")
-if recomecar == 1:
-    puxarnota()
-elif recomecar == 2:
-    print("Certo, até mais!")
-    time.sleep(5)
+def sair():
+    navegador.close()
     exit()
-else:
-    print("Comando não identificado, caso deseje refazer o procedimento inicie novamente o programa.")
-    time.sleep(5)
-    exit()
+
+
+def painel():
+    # xpaths para chegarmos na área de lançamento de notas
+    caminhoinicial()
+
+    # extração do texto do elemento Cursos
+    navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+    time.sleep(1)
+    elementocursos = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+    a = open('cursos.txt', 'w')
+    a.write(elementocursos)
+    a.close()
+
+    # def responsável pela alteração do arquivo na pasta raiz do Cabot
+    def alterartxt():
+        entradateclado = selecionados.get("1.0", "end-1c")
+        print(entradateclado)
+        txtentrada = open('cursos.txt', 'w')
+        txtentrada.write(entradateclado)
+        txtentrada.close()
+        puxarnota()
+
+    def atualizartxttodos():
+        Label(janela, text="Cursos encontrados:", bg="lightgrey").grid(row=1, column=3, padx=5, pady=5, sticky=E)
+        atualizado = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
+        atualizado.insert(END, elementocursos)
+        encontrados.destroy()
+        atualizado.grid(row=2, column=3, padx=5, pady=5)
+
+    # inicio da janela
+    janela = Tk()
+    janela.title("Painel Cabot")
+    janela.minsize(500, 300)  # width x height, define o tamanho mínimo da janela, pra facilitar a visualização
+    janela.config(bg="lightgrey")
+
+    # inicio disposição dos elementos no grid
+    texto_info = Label(janela, text="Modo Edição. Escolha os cursos para o sistema puxar nota", bg="lightgrey")
+    texto_info.grid(row=0, column=1, columnspan=4, padx=5, pady=5)
+
+    # Nome da label e entrada de info
+    Label(janela, text="Cursos que deseja:", bg="lightgrey").grid(row=1, column=1, padx=5, pady=5, sticky=W)
+    selecionados = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
+    selecionados.grid(row=2, column=1, padx=5, pady=5)
+
+    Label(janela, text="<- Escolha os cursos e cole aqui", bg="lightgrey").grid(row=2, column=2, padx=5, pady=5,
+                                                                                sticky=E)
+
+    Label(janela, text="Cursos encontrados:", bg="lightgrey").grid(row=1, column=3, padx=5, pady=5, sticky=E)
+    encontrados = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
+    encontrados.insert(END, elementocursos)
+    encontrados.grid(row=2, column=3, padx=5, pady=5)
+
+    # botões
+    botaopuxar = Button(janela, text="Puxar nota destes cursos", command=alterartxt, bg="lightgreen", fg="white",
+                        font="Helvetica 9 bold")
+    botaopuxar.grid(column=1, row=5)
+    botaofechar = Button(janela, text="Fechar Sistema", command=sair, bg="red", fg="white", font="Helvetica 9 bold")
+    botaofechar.grid(column=2, row=6)
+    botaotudo = Button(janela, text="Puxar nota de todos", command=puxarnota, bg="black", fg="white",
+                       font="Helvetica 9 bold")
+    botaotudo.grid(column=3, row=5)
+    botaoatualizar = Button(janela, text="Atualizar", command=atualizartxttodos,
+                            bg="lightgrey", fg="black", font="Helvetica 9 bold")
+    botaoatualizar.grid(column=3, row=6)
+
+    Label(janela, text="Criado por: Raziel Haas Willms", bg="lightgrey").grid(row=6, column=3, padx=5, pady=5, sticky=E)
+
+    janela.mainloop()  # responsável por manter a janela aberta
+
+
+painel()
