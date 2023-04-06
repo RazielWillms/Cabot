@@ -19,8 +19,8 @@ def caminhoinicial():
     # xpaths para chegarmos na área de lançamento de notas
     navegador.maximize_window()
     navegador.get('https://unintese.sistemasiga.net/login')
-    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
-    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
     navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
     navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
     navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
@@ -171,9 +171,16 @@ def painel():
         puxarnota()
 
     def atualizartxttodos():
+        # nova extração do texto do elemento Cursos
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+        arquivoatualizado = open('cursos.txt', 'w')
+        arquivoatualizado.write(elementocursosatualizado)
+        arquivoatualizado.close()
+        # atualização do campo visual
         Label(janela, text="Cursos encontrados:", bg="lightgrey").grid(row=1, column=3, padx=5, pady=5, sticky=E)
         atualizado = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
-        atualizado.insert(END, elementocursos)
+        atualizado.insert(END, elementocursosatualizado)
         encontrados.destroy()
         atualizado.grid(row=2, column=3, padx=5, pady=5)
 
