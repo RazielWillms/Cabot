@@ -6,5 +6,5 @@ Tutorial de instalação
 	>>> cd path to main.py
 	>>> python main.py
 4º Após inicialização do painel Cabot, feche o sistema;
-5º Crie um atalho na área de trabalho.
+5º Crie um atalho na área de trabalho a partir do .exe.
 Pronto!
