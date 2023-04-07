@@ -1,5 +1,7 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
 import time
+import tkinter
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -8,6 +10,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 from tkinter import *
+
 
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
@@ -19,8 +22,8 @@ def caminhoinicial():
     # xpaths para chegarmos na área de lançamento de notas
     navegador.maximize_window()
     navegador.get('https://unintese.sistemasiga.net/login')
-    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('04853343059')
-    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('04853343059')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[1]/div/div/input').send_keys('Login')
+    navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[2]/div/div/input').send_keys('Senha')
     navegador.find_element('xpath', '/html/body/div[2]/form[1]/div[3]/div/div/select').send_keys('Administração')
     navegador.find_element('xpath', '//*[@id="login-btn"]/i').click()
     navegador.find_element('xpath', '//*[@id="noprint"]/li[20]/a').click()
@@ -144,12 +147,66 @@ def puxarnota():
     curso.close()
 
 
-def sair():
-    navegador.close()
-    exit()
-
-
 def painel():
+    # inicio def´s usadas no painel através dos botões
+    # def responsável por fechar as dependências e encerrar o sistema- obviamente
+    def sair():
+        janela.destroy()
+        webdriver.Chrome(service=servico).close()
+        exit()
+
+    # def responsável pela alteração do arquivo na pasta raiz do Cabot
+    def alterartxt():
+        entradateclado = selecionados.curselection()
+        txtentrada = open('cursos.txt', 'w')
+        for entrada in entradateclado:
+            txtentrada.write(listbox[entrada+1])  # +1 para compensar o item excluído da listbox: 'Escolha um curso...'
+        txtentrada.close()
+        puxarnota()
+
+    # def responsável pela restauração do txt
+    def atualizartxttodos():
+        # nova extração do texto do elemento Cursos
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+        arquivoatualizado = open('cursos.txt', 'w')
+        arquivoatualizado.write(elementocursosatualizado)
+        arquivoatualizado.close()
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        # atualização do campo visual
+        selecionados.destroy()
+        listaatualizada = open('cursos.txt', 'r')
+        listboxatualizado = listaatualizada.readlines()
+        listaatualizada.close()
+        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=2, selectmode=tkinter.EXTENDED,
+                              cursor="plus", selectbackground="#976daf", activestyle='none')
+        for elementosatualizados in listboxatualizado:
+            selecionados.insert(END, elementosatualizados)
+        selecionados.delete(0, last=None)
+        selecionados.grid(row=2, column=1, padx=5, pady=5)
+
+    # def responsável pela restauração do txt e chamada do puxar nota
+    def puxartxttodos():
+        # nova extração do texto do elemento Cursos
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
+        arquivoatualizado = open('cursos.txt', 'w')
+        arquivoatualizado.write(elementocursosatualizado)
+        arquivoatualizado.close()
+        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
+        # atualização do campo visual
+        selecionados.destroy()
+        listaatualizada = open('cursos.txt', 'r')
+        listboxatualizado = listaatualizada.readlines()
+        listaatualizada.close()
+        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=2, selectmode=tkinter.EXTENDED,
+                              cursor="plus", selectbackground="#976daf", activestyle='none')
+        for elementosatualizados in listboxatualizado:
+            selecionados.insert(END, elementosatualizados)
+        selecionados.delete(0, last=None)
+        selecionados.grid(row=2, column=1, padx=5, pady=5)
+        puxarnota()
+
     # xpaths para chegarmos na área de lançamento de notas
     caminhoinicial()
 
@@ -160,80 +217,56 @@ def painel():
     a = open('cursos.txt', 'w')
     a.write(elementocursos)
     a.close()
-
-    # def responsável pela alteração do arquivo na pasta raiz do Cabot
-    def alterartxt():
-        entradateclado = selecionados.get("1.0", "end-1c")
-        txtentrada = open('cursos.txt', 'w')
-        txtentrada.write(entradateclado)
-        txtentrada.close()
-        puxarnota()
-
-    def atualizartxttodos():
-        # nova extração do texto do elemento Cursos
-        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
-        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
-        arquivoatualizado = open('cursos.txt', 'w')
-        arquivoatualizado.write(elementocursosatualizado)
-        arquivoatualizado.close()
-        # atualização do campo visual
-        selecionados.destroy()
-        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=3)
-        selecionados.insert(END, elementocursosatualizado)
-        selecionados.grid(row=2, column=1, padx=5, pady=5)
-
-    def puxartxttodos():
-        # nova extração do texto do elemento Cursos
-        navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
-        elementocursosatualizado = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
-        arquivoatualizado = open('cursos.txt', 'w')
-        arquivoatualizado.write(elementocursosatualizado)
-        arquivoatualizado.close()
-        # atualização do campo visual
-        selecionados.destroy()
-        selecionados.__init__(font="Helvetica 10", height=20, width=75, bd=3)
-        selecionados.insert(END, elementocursosatualizado)
-        selecionados.grid(row=2, column=1, padx=5, pady=5)
-        puxarnota()
-
+    lista = open('cursos.txt', 'r')
+    listbox = lista.readlines()
+    lista.close()
     # inicio da janela/configurações
     janela = Tk()
     janela.title("Painel Cabot")
     janela.minsize(500, 300)  # width x height, define o tamanho mínimo da janela, pra facilitar a visualização
-    janela.config(bg="lightgrey")
+    janela.resizable(False, False)
+    janela.config(bg="lightgrey", bd=1)
 
     # inicio disposição dos elementos no grid
     # imagem logo Cabot
-    # Setting it up
     img = PhotoImage(file="resources/logo.png")
-    logoimg = Label(janela, image=img)
+    logoimg = Label(janela, image=img, bd=1)
     logoimg.grid(row=0, column=1, padx=5, pady=5)
 
+    imgredefinir = PhotoImage(file="resources/refresh_icon2.png")
+
+    janela.iconbitmap("icone.ico")
+    # txt info´s
+    Label(janela, text="*Edite o que foi encontrado e deixe apenas os cursos que deseja puxar nota*",
+          font="Helvetica 9 bold", bg="lightgrey").grid(row=1, column=1)
     # txt com cursos encontrados no SIGA
-    selecionados = Text(janela, font="Helvetica 10", height=20, width=75, bd=3)
-    selecionados.insert(END, elementocursos)
+    selecionados = Listbox(janela, font="Helvetica 10", height=20, width=75, bd=2,
+                           selectmode=tkinter.EXTENDED, cursor="plus", selectbackground="#976daf", activestyle='none')
+    for elementos in listbox:
+        selecionados.insert(END, elementos)
+    selecionados.delete(0, last=None)
     selecionados.grid(row=2, column=1, padx=5, pady=5)
 
     # 1º botão
-    botaopuxar = Button(janela, text="Puxar nota parcial", command=alterartxt, bg="green", fg="white",
+    botaopuxar = Button(janela, text="Puxar Selecionado", command=alterartxt, bg="#56856f", fg="white",
                         font="Helvetica 9 bold", width=18)
     botaopuxar.grid(column=1, row=5, sticky=W, padx=5, pady=2)
     # 2º botão
-    botaotudo = Button(janela, text="Puxar nota completa", command=puxartxttodos, bg="black", fg="white",
+    botaotudo = Button(janela, text="Puxar Todos", command=puxartxttodos, bg="#292625", fg="white",
                        font="Helvetica 9 bold", width=18)
     botaotudo.grid(column=1, row=6, sticky=W, padx=5, pady=2)
     # 3º botão
-    botaofechar = Button(janela, text="  Fechar Sistema  ", command=sair, bg="red",
+    botaofechar = Button(janela, text="  Fechar Sistema  ", command=sair, bg="#953e44",
                          fg="white", font="Helvetica 9 bold", width=18)
     botaofechar.grid(column=1, row=7, sticky=W, padx=5, pady=2)
     # 4º botão
-    botaoatualizar = Button(janela, text="Atualizar lista", command=atualizartxttodos,
-                            bg="lightgrey", fg="black", font="Helvetica 9 bold", width=15)
-    botaoatualizar.grid(column=1, row=5, sticky=E, padx=5, pady=2)
+    botaoatualizar = Button(janela, text=" Redefinir lista", image=imgredefinir, compound=tkinter.LEFT,
+                            command=atualizartxttodos, bg="lightgrey", fg="black", font="Helvetica 9 bold")
+    botaoatualizar.grid(column=1, row=5, sticky=E, padx=5)
 
     # assinatura
-    Label(janela, text="Criado por: Raziel Haas Willms", font="Helvetica 6 bold",
-          bg="lightgrey").grid(row=7, column=1, padx=5, pady=5, sticky=E)
+    Label(janela, text="Criado por: Raziel Haas Willms", font="Helvetica 7 bold",
+          bg="lightgrey").grid(row=7, column=1, sticky=SE)
 
     janela.mainloop()  # responsável por manter a janela aberta
 
