@@ -110,6 +110,7 @@ def puxar_nota():
                 b.write(elemento_web)
                 b.close()
                 time.sleep(1)
+                # alterar_txt_turma()
                 turma_txt = open('turmas.txt', 'r')
                 turma_lista = turma_txt.readlines()
                 turma_txt.close()
@@ -244,6 +245,24 @@ def alterar_txt():
         txt_entrada.write(listbox[entrada + 1])  # +1 para compensar o item excluído da listbox: 'Escolha um curso...'
     txt_entrada.close()
     puxar_nota()
+
+
+# confere o que foi escrito na turma e remove 'turmas ativas', 'turmas encerradas' e 'turmas não iniciadas'
+# não funciona ainda
+# def alterar_txt_turma():
+#    txt_disciplina = open('turmas.txt', 'r')
+#    lista_disciplina = txt_disciplina.readlines()
+#    txt_disciplina.close()
+#    txt_disciplina = open('turmas.txt', 'w')
+#    evitar = "Turmas ativas"
+#    for entrada in lista_disciplina:
+#        if entrada == evitar:
+#            break
+#        else:
+#            txt_disciplina.write(entrada)
+#            print(evitar)
+#            print(entrada)
+#    txt_disciplina.close()
 
 
 # def responsável pela restauração do txt
