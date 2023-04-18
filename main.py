@@ -1,5 +1,6 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
 import os
+from selenium.webdriver import ChromeOptions
 import time
 import tkinter
 from selenium import webdriver
@@ -84,7 +85,6 @@ def criptografar():
 
 def puxar_nota():
     try:
-        time.sleep(1)
         # Inicio Lógica de 'puxada de nota'
         curso_txt = open('cursos.txt', 'r')
         curso_lista = curso_txt.readlines()
@@ -248,6 +248,7 @@ def puxar_nota():
 def sair():
     painel.destroy()
     navegador.close()
+
     exit()
 
 
@@ -366,6 +367,8 @@ def conferir_salvo():
 # automatiza a atualização do webdriver, do contrário seria necessário instalação manual a cada atualização do chrome
 servico = Service(ChromeDriverManager().install())
 navegador = webdriver.Chrome(service=servico)
+chrome_options = ChromeOptions()
+chrome_options.add_argument('--disable-infobars')
 aguardar = WebDriverWait(navegador, 300)  # define o tempo máximo que o sistema aguardará
 
 # Cores utilizadas
