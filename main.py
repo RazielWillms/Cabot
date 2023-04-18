@@ -1,5 +1,4 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
-import time
 import os
 import tkinter
 from selenium import webdriver
@@ -94,23 +93,18 @@ def puxar_nota():
             if contador_curso < len(curso_lista):
                 elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="curso_chosen"]/a')))
                 elemento_web.click()
-                time.sleep(1)
                 elemento_web = navegador.find_element('xpath', '//*[@id="curso_chosen"]/div/div/input')
                 elemento_web.send_keys(nome_curso)
-                time.sleep(1)
                 elemento_web.send_keys(Keys.ENTER)
-                time.sleep(1)
                 # extração do texto do elemento turmas
                 elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
                 elemento_web.click()
-                time.sleep(1)
                 elemento_web = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/ul') \
                     .get_attribute("innerText")
                 b = open('turmas.txt', 'w')
                 b.write(elemento_web)
                 b.close()
-                time.sleep(1)
-                # alterar_txt_turma()
+                alterar_txt_turma()
                 turma_txt = open('turmas.txt', 'r')
                 turma_lista = turma_txt.readlines()
                 turma_txt.close()
@@ -122,89 +116,103 @@ def puxar_nota():
                 if contador_turma < len(turma_lista):
                     elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
                     elemento_web.click()
-                    time.sleep(1)
                     elemento_web = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input')
                     elemento_web.send_keys(nome_turma)
-                    time.sleep(1)
                     elemento_web.send_keys(Keys.ENTER)
-                    time.sleep(1)
-                    # extração do texto do elemento disciplinas
+                    # extração do texto do elemento divisão
                     elemento_web = aguardar.until(ec.element_to_be_clickable
-                                                  ((By.XPATH, '//*[@id="disciplina_chosen"]')))
+                                                  ((By.XPATH, '//*[@id="divisao_chosen"]/a')))
                     elemento_web.click()
-                    time.sleep(1)
-                    elemento_web = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
+                    elemento_web = navegador.find_element('xpath', '//*[@id="divisao_chosen"]/div/ul'). \
                         get_attribute("innerText")
-                    c = open('disciplinas.txt', 'w')
+                    c = open('periodo.txt', 'w')
                     c.write(elemento_web)
                     c.close()
-                    time.sleep(1)
-                    disciplina_txt = open('disciplinas.txt', 'r')
-                    disciplina_lista = disciplina_txt.readlines()
-                    disciplina_txt.close()
-                    contador_turma = contador_turma + 1
+                    periodo_txt = open('periodo.txt', 'r')
+                    periodo_lista = periodo_txt.readlines()
+                    periodo_txt.close()
                 else:
                     break
-                contador_disciplina = 0  # padrão (0)
-                for nome_disciplina in disciplina_lista:
-                    if contador_disciplina < len(disciplina_lista):
+                contador_periodo = 0  # padrão (0)
+                for nome_periodo in periodo_lista:
+                    if contador_periodo < len(periodo_lista):
+                        elemento_web = aguardar.until(
+                            ec.element_to_be_clickable((By.XPATH, '//*[@id="divisao_chosen"]')))
+                        elemento_web.click()
+                        elemento_web = navegador.find_element('xpath', '//*[@id="divisao_chosen"]/div/div/input')
+                        elemento_web.send_keys(nome_periodo)
+                        elemento_web.send_keys(Keys.ENTER)
+                        # extração do texto do elemento disciplinas
                         elemento_web = aguardar.until(ec.element_to_be_clickable
                                                       ((By.XPATH, '//*[@id="disciplina_chosen"]')))
                         elemento_web.click()
-                        time.sleep(1)
-                        elemento_web.click()
-                        time.sleep(1)
-                        elemento_web = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input')
-                        elemento_web.send_keys(nome_disciplina)
-                        time.sleep(1)
-                        elemento_web.send_keys(Keys.ENTER)
-                        time.sleep(1)
-                        # botão carregar médias
-                        elemento_web = aguardar.until(ec.element_to_be_clickable
-                                                      (navegador.find_element('xpath', '//*[''@id''="carregarNotas"]')))
-                        elemento_web.click()
-                        # botão importar notas
-                        aguardar.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
-                        navegador.switch_to.frame(0)
-                        elemento_web = aguardar.until(ec.element_to_be_clickable
-                                                      ((By.XPATH, '/html/body/div[3]/div/div/form/fieldset/a')))
-                        elemento_web.click()
-                        # dá ok/sim no pop-up
-                        aguardar.until(ec.alert_is_present(), 'O alerta não apareceu')
-                        elemento_web = navegador.switch_to.alert
-                        elemento_web.accept()
-                        # desmarca o checkbox para recalcular
-                        elemento_web = aguardar.until(
-                            ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset'
-                                                                  '/input')))
-                        elemento_web.click()
-                        # aciona a inversão de puxar nota
-                        elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="btnLancado"]')))
-                        elemento_web.click()
-                        # confere todas as checkbox para deixá-las marcadas
-                        elemento_web = navegador.find_elements(By.CLASS_NAME, 'lancadoAluno')
-                        for w in elemento_web:
-                            selecionado = w.is_selected()
-                            if not selecionado:
-                                w.click()
-                                time.sleep(1)
-                        # save btn
-                        elemento_web = aguardar.until(ec.element_to_be_clickable
-                                                      ((By.XPATH, '//*[@id="noprint"]/button')))
-                        elemento_web.click()
-                        # confirm save btn
-                        elemento_web = aguardar.until(ec.element_to_be_clickable
-                                                      ((By.XPATH, '/html/body/div[5]/div[2]/a[1]')))
-                        elemento_web.click()
-                        # botão fechar painel para voltar ao loop
-                        navegador.switch_to.default_content()
-                        elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH,
-                                                                                  '/html/body/div[6]/div/div/a')))
-                        elemento_web.click()
-                        time.sleep(1)
-                        contador_disciplina = contador_disciplina + 1
+                        elemento_web = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/ul'). \
+                            get_attribute("innerText")
+                        d = open('disciplinas.txt', 'w')
+                        d.write(elemento_web)
+                        d.close()
+                        disciplina_txt = open('disciplinas.txt', 'r')
+                        disciplina_lista = disciplina_txt.readlines()
+                        disciplina_txt.close()
+                        contador_periodo = contador_periodo + 1
                     else:
                         break
+                    contador_disciplina = 0  # padrão (0)
+                    for nome_disciplina in disciplina_lista:
+                        if contador_disciplina < len(disciplina_lista):
+                            elemento_web = aguardar.until(ec.element_to_be_clickable
+                                                          ((By.XPATH, '//*[@id="disciplina_chosen"]')))
+                            elemento_web.click()
+                            elemento_web.click()
+                            elemento_web = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input')
+                            elemento_web.send_keys(nome_disciplina)
+                            elemento_web.send_keys(Keys.ENTER)
+                            # botão carregar médias
+                            elemento_web = aguardar.until(ec.element_to_be_clickable
+                                                          (navegador.find_element
+                                                           ('xpath', '//*[''@id''="carregarNotas"]')))
+                            elemento_web.click()
+                            # botão importar notas
+                            aguardar.until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[6]/div/div/a')))
+                            navegador.switch_to.frame(0)
+                            elemento_web = aguardar.until(ec.element_to_be_clickable
+                                                          ((By.XPATH, '/html/body/div[3]/div/div/form/fieldset/a')))
+                            elemento_web.click()
+                            # dá ok/sim no pop-up
+                            aguardar.until(ec.alert_is_present(), 'O alerta não apareceu')
+                            elemento_web = navegador.switch_to.alert
+                            elemento_web.accept()
+                            # desmarca o checkbox para recalcular
+                            elemento_web = aguardar.until(
+                                ec.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div/div/form/fieldset'
+                                                                      '/input')))
+                            elemento_web.click()
+                            # aciona a inversão de puxar nota
+                            elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH,
+                                                                                      '//*[@id="btnLancado"]')))
+                            elemento_web.click()
+                            # confere todas as checkbox para deixá-las marcadas
+                            elemento_web = navegador.find_elements(By.CLASS_NAME, 'lancadoAluno')
+                            for w in elemento_web:
+                                selecionado = w.is_selected()
+                                if not selecionado:
+                                    w.click()
+                            # save btn
+                            elemento_web = aguardar.until(ec.element_to_be_clickable
+                                                          ((By.XPATH, '//*[@id="noprint"]/button')))
+                            elemento_web.click()
+                            # confirm save btn
+                            elemento_web = aguardar.until(ec.element_to_be_clickable
+                                                          ((By.XPATH, '/html/body/div[5]/div[2]/a[1]')))
+                            elemento_web.click()
+                            # botão fechar painel para voltar ao loop
+                            navegador.switch_to.default_content()
+                            elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH,
+                                                                                      '/html/body/div[6]/div/div/a')))
+                            elemento_web.click()
+                            contador_disciplina = contador_disciplina + 1
+                        else:
+                            break
     except OSError as err:
         print("OS error:", err)
         info_txt.destroy()
@@ -247,22 +255,19 @@ def alterar_txt():
     puxar_nota()
 
 
-# confere o que foi escrito na turma e remove 'turmas ativas', 'turmas encerradas' e 'turmas não iniciadas'
-# não funciona ainda
-# def alterar_txt_turma():
-#    txt_disciplina = open('turmas.txt', 'r')
-#    lista_disciplina = txt_disciplina.readlines()
-#    txt_disciplina.close()
-#    txt_disciplina = open('turmas.txt', 'w')
-#    evitar = "Turmas ativas"
-#    for entrada in lista_disciplina:
-#        if entrada == evitar:
-#            break
-#        else:
-#            txt_disciplina.write(entrada)
-#            print(evitar)
-#            print(entrada)
-#    txt_disciplina.close()
+# compara o que foi escrito na turma e remove 'turmas ativas', 'turmas encerradas' e 'turmas não iniciadas'
+def alterar_txt_turma():
+    textos_a_serem_excluidos = ["Turmas ativas", "Turmas encerradas", "Turmas não inciadas"]
+
+    with open('turmas.txt', 'r+') as arquivo:
+        linhas = arquivo.readlines()
+        arquivo.seek(0)
+        novas_linhas = []
+        for linha in linhas:
+            if not any(texto in linha for texto in textos_a_serem_excluidos):
+                novas_linhas.append(linha)
+        arquivo.writelines(novas_linhas)
+        arquivo.truncate()
 
 
 # def responsável pela restauração do txt
@@ -381,6 +386,7 @@ info_txt = Label(painel_login, text="Informe os dados de acesso no SIGA:",
                  font="Helvetica 9 bold", bg=cor5)
 info_txt.grid(row=0, column=1)
 
+
 # campos de login e senha
 login = Label(painel_login, text="Login:", height=1, anchor=NW, font='Ivy 10 bold', bg=cor5, fg=cor4)
 login.grid(row=1, column=0)
@@ -409,7 +415,6 @@ painel_login.mainloop()
 # INÍCIO PAINEL CABOT --------------------------------------------------
 # extração do texto do elemento Cursos
 navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
-time.sleep(1)
 elemento_web_cursos = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
 a = open('cursos.txt', 'w')
 a.write(elemento_web_cursos)
@@ -478,7 +483,7 @@ botao_atualizar = Button(painel, text=" Redefinir lista", image=img_redefinir, c
 botao_atualizar.grid(column=1, row=5, sticky=E, padx=5)
 
 # assinatura
-Label(painel, text="Criado por: Raziel Haas Willms", font="Helvetica 7 bold",
+Label(painel, text="Criado por: Raziel e Palf", font="Helvetica 7 bold",
       bg="lightgrey").grid(row=7, column=1, sticky=SE)
 
 painel.mainloop()  # responsável por manter a painel aberta
