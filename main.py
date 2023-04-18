@@ -1,5 +1,6 @@
 # Cabot- robô acadêmico para puxar notas no SIGA- Faculdade Uníntese- Raziel Haas Willms
 import os
+import time
 import tkinter
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -83,6 +84,7 @@ def criptografar():
 
 def puxar_nota():
     try:
+        time.sleep(1)
         # Inicio Lógica de 'puxada de nota'
         curso_txt = open('cursos.txt', 'r')
         curso_lista = curso_txt.readlines()
@@ -96,6 +98,7 @@ def puxar_nota():
                 elemento_web = navegador.find_element('xpath', '//*[@id="curso_chosen"]/div/div/input')
                 elemento_web.send_keys(nome_curso)
                 elemento_web.send_keys(Keys.ENTER)
+                time.sleep(1)
                 # extração do texto do elemento turmas
                 elemento_web = aguardar.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="turma_chosen"]/a')))
                 elemento_web.click()
@@ -119,6 +122,7 @@ def puxar_nota():
                     elemento_web = navegador.find_element('xpath', '//*[@id="turma_chosen"]/div/div/input')
                     elemento_web.send_keys(nome_turma)
                     elemento_web.send_keys(Keys.ENTER)
+                    time.sleep(1)
                     # extração do texto do elemento divisão
                     elemento_web = aguardar.until(ec.element_to_be_clickable
                                                   ((By.XPATH, '//*[@id="divisao_chosen"]/a')))
@@ -142,6 +146,7 @@ def puxar_nota():
                         elemento_web = navegador.find_element('xpath', '//*[@id="divisao_chosen"]/div/div/input')
                         elemento_web.send_keys(nome_periodo)
                         elemento_web.send_keys(Keys.ENTER)
+                        time.sleep(1)
                         # extração do texto do elemento disciplinas
                         elemento_web = aguardar.until(ec.element_to_be_clickable
                                                       ((By.XPATH, '//*[@id="disciplina_chosen"]')))
@@ -165,6 +170,7 @@ def puxar_nota():
                             elemento_web.click()
                             elemento_web.click()
                             elemento_web = navegador.find_element('xpath', '//*[@id="disciplina_chosen"]/div/div/input')
+                            time.sleep(1)
                             elemento_web.send_keys(nome_disciplina)
                             elemento_web.send_keys(Keys.ENTER)
                             # botão carregar médias
