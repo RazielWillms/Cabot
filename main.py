@@ -23,12 +23,18 @@ chrome_options.add_argument('--disable-infobars')
 aguardar = WebDriverWait(navegador, 300)  # define o tempo máximo que o sistema aguardará
 
 # Cores utilizadas
-cor0 = "#976daf"  # roxo
-cor1 = "#feffff"  # branco
-cor2 = "#56856f"  # verde
-cor3 = "#953e44"  # vermelho
-cor4 = "#403d3d"  # cinza escuro
-cor5 = "#D3D3D3"  # cinza claro
+cor_roxo = "#976daf"
+cor_branco = "#feffff"
+cor_preto = "#000000"
+cor_verde = "#56856f"
+cor_vermelho = "#953e44"
+cor_cinza = "#403d3d"
+cor_cinza_escuro = "#AEAEAE"
+cor_cinza_claro = "#D3D3D3"
+
+# padrões de fontes utilizadas
+fonte_painel = "Handlee 11"
+fonte_listbox = "Handlee 10"
 
 
 def criptografar():
@@ -86,23 +92,25 @@ class App:
 
         # config do painel
         self.painel_login.resizable(False, False)
-        self.painel_login.config(bg=cor5, bd=1, padx=5, pady=5)
+        self.painel_login.config(bg=cor_cinza_claro, bd=1, padx=5, pady=5)
         self.painel_login.iconbitmap("./recursos/icone.ico")
 
         # início disposição dos elementos
         # txt info´s
         self.info_txt = Label(self.painel_login, text="Informe os dados de acesso no SIGA:",
-                              font="Helvetica 9 bold", bg=cor5)
+                              font=fonte_painel, bg=cor_cinza_claro)
         self.info_txt.grid(row=0, column=1)
 
         # campos de login e senha
-        self.login = Label(self.painel_login, text="Login:", height=1, anchor=NW, font='Ivy 10 bold', bg=cor5, fg=cor4)
+        self.login = Label(self.painel_login, text="Login:", height=1, anchor=NW, font='Ivy 10 bold',
+                           bg=cor_cinza_claro, fg=cor_cinza)
         self.login.grid(row=1, column=0)
         self.recebe_login = Entry(self.painel_login, width=25, justify='left', font=("", 15), highlightthickness=1,
                                   relief="solid")
         self.recebe_login.grid(row=1, column=1)
 
-        self.senha = Label(self.painel_login, text="Senha:", height=1, anchor=NW, font='Ivy 10 bold', bg=cor5, fg=cor4)
+        self.senha = Label(self.painel_login, text="Senha:", height=1, anchor=NW, font='Ivy 10 bold',
+                           bg=cor_cinza_claro, fg=cor_cinza)
         self.senha.grid(row=2, column=0)
         self.recebe_senha = Entry(self.painel_login, show='*', width=25, justify='left', font=("", 15),
                                   highlightthickness=1, relief="solid")
@@ -111,18 +119,20 @@ class App:
         self.conferir_salvo()
 
         self.marcado_salvar = IntVar()
-        self.checkbox_salvar = Checkbutton(self.painel_login, text="Lembrar-me", bg=cor5, font='Ivy 8 bold',
+        self.checkbox_salvar = Checkbutton(self.painel_login, text="Lembrar-me", bg=cor_cinza_claro, font='Ivy 8 bold',
                                            variable=self.marcado_salvar)
         self.checkbox_salvar.grid(row=3, column=1, sticky=W)
 
         self.botao_confirmar = Button(self.painel_login, command=self.caminho_inicial, text="Entrar", width=39,
-                                      height=2, bg=cor2, fg=cor1, font='Ivy 8 bold', relief=RAISED, overrelief=RIDGE)
+                                      height=2, bg=cor_verde, fg=cor_branco, font='Ivy 8 bold', relief=RAISED,
+                                      overrelief=RIDGE)
         self.botao_confirmar.grid(row=4, column=1, pady=2, padx=5)
 
         self.painel_login.mainloop()
-        # FIM PAINEL DE LOGIN --------------------------------------------------
 
+        # FIM PAINEL DE LOGIN --------------------------------------------------
         # INÍCIO PAINEL CABOT --------------------------------------------------
+
         # extração do texto do elemento Cursos
         navegador.find_element('xpath', '//*[@id="curso_chosen"]/a').click()
         elemento_web_cursos = navegador.find_element('class name', 'chosen-results').get_attribute("innerText")
@@ -138,71 +148,83 @@ class App:
         self.painel.title("Painel Cabot")
         self.painel.minsize(500, 300)  # width x height, define o tamanho mínimo da painel, pra facilitar a visualização
         self.painel.resizable(False, False)
-        self.painel.config(bg=cor5, bd=1, padx=5, pady=5)
+        self.painel.config(bg=cor_cinza_claro, bd=1, padx=5)
 
         # inicio disposição dos elementos no grid
 
-        # imagem logo Cabot
-        img = PhotoImage(file="./recursos/logo.png")
-        logo_img = Label(self.painel, image=img, bd=1)
-        logo_img.grid(row=0, column=1)
-
-        self.img_redefinir = PhotoImage(file="./recursos/refresh_icon2.png")
-
+        # altera ícone da janela
         self.painel.iconbitmap("./recursos/icone.ico")
 
-        # txt info´s
-        self.info_txt = Label(self.painel, text="*Selecione os cursos que deseja efetuar o processamento de notas*",
-                              font="Helvetica 9 bold", bg=cor5)
+        # imagem logo Cabot
+        img = PhotoImage(file="./recursos/logo.png")
+        logo_img = Label(self.painel, image=img, bd=0)
+        logo_img.grid(row=0, column=1, sticky=N, pady=1)
+
+        # info png + txt info´s
+        img_barra = PhotoImage(file="./recursos/barra.png")
+        self.barra = Label(self.painel, image=img_barra, font=fonte_painel, bg=cor_cinza_claro)
+        self.barra.grid(row=1, column=1, sticky=S)
+
+        self.info_txt = Label(self.painel, text="Clique nos cursos que deseja puxar notas",
+                              font=fonte_painel, bg=cor_cinza_escuro, fg=cor_preto)
         self.info_txt.grid(row=1, column=1)
+
+        self.img_info = PhotoImage(file="./recursos/info_ico.png")
+        self.info_png = Label(image=self.img_info, bg=cor_cinza_escuro)
+        self.info_png.grid(row=1, column=1, sticky=SW, padx=17, pady=3)
 
         # scrollbar config/vinculo com listbox
         self.frame_scrollbar = Frame(self.painel)
         self.scrollbar = Scrollbar(self.frame_scrollbar, orient=VERTICAL)
 
         # listbox com cursos encontrados no SIGA
-        self.selecionados = Listbox(self.frame_scrollbar, font="Helvetica 10", height=20, width=75, bd=0,
-                                    selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor0,
+        self.selecionados = Listbox(self.frame_scrollbar, font=fonte_listbox, height=20, width=75, bd=0,
+                                    selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor_roxo,
                                     activestyle='none', yscrollcommand=self.scrollbar.set)
 
         # config´s scrollbar
         self.scrollbar.config(command=self.selecionados.yview)
-        self.scrollbar.grid(sticky=tkinter.NS, column=2, row=2)
-        self.frame_scrollbar.grid(row=2, column=1, padx=5, pady=5)
+        self.scrollbar.grid(sticky=tkinter.NS, column=2, row=3)
+        self.frame_scrollbar.grid(row=3, column=1, padx=5, pady=5)
 
         for elementos in self.listbox:
             self.selecionados.insert(END, elementos)
         self.selecionados.delete(0, last=None)
-        self.selecionados.grid(row=2, column=1, padx=5, pady=5)
+        self.selecionados.grid(row=3, column=1, padx=5, pady=5)
 
         # 1º botão
-        self.botao_puxar = Button(self.painel, text="Puxar Selecionado", command=self.alterar_txt, bg=cor2, fg=cor1,
-                                  font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
+        self.img_puxar = PhotoImage(file="./recursos/puxar.png")
+        self.botao_puxar = Button(self.painel, image=self.img_puxar, command=self.alterar_txt, bg=cor_cinza_claro,
+                                  fg=cor_cinza_claro, relief=RAISED, overrelief="flat", borderwidth=0,
+                                  highlightthickness=0)
         self.botao_puxar.grid(column=1, row=5, sticky=W, pady=2, padx=5)
 
         # 2º botão
-        self.botao_todos = Button(self.painel, text="Puxar Todos", command=self.redefinir_txt_puxar, bg="#292625",
-                                  fg=cor1, font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
+        self.img_todos = PhotoImage(file="./recursos/todos.png")
+        self.botao_todos = Button(self.painel, image=self.img_todos, command=self.redefinir_txt_puxar,
+                                  bg=cor_cinza_claro, fg=cor_cinza_claro, relief=RAISED, overrelief="flat",
+                                  borderwidth=0, highlightthickness=0)
         self.botao_todos.grid(column=1, row=6, sticky=W, pady=2, padx=5)
         # 3º botão
-        self.botao_fechar = Button(self.painel, text="  Fechar Sistema  ", command=self.sair, bg=cor3, fg=cor1,
-                                   font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
+
+        self.img_fechar = PhotoImage(file="./recursos/fechar.png")
+        self.botao_fechar = Button(self.painel, command=self.sair, relief=RAISED, overrelief="flat",
+                                   image=self.img_fechar, borderwidth=0, highlightthickness=0,
+                                   bg=cor_cinza_claro, fg=cor_cinza_claro)
+
         self.botao_fechar.grid(column=1, row=7, sticky=NW, pady=2, padx=5)
         # 4º botão
-        self.botao_atualizar = Button(self.painel, text=" Redefinir lista", image=self.img_redefinir,
-                                      compound=tkinter.LEFT, command=self.redefinir_txt, bg=cor5, fg="black",
-                                      font="Helvetica 9 bold", relief=RAISED, overrelief=RIDGE)
+        self.img_redefinir = PhotoImage(file="./recursos/atualizar.png")
+        self.botao_atualizar = Button(self.painel, image=self.img_redefinir, command=self.redefinir_txt,
+                                      bg=cor_cinza_claro, borderwidth=0, highlightthickness=0, fg=cor_cinza_claro,
+                                      font=fonte_painel, relief=RAISED, overrelief="flat")
         self.botao_atualizar.grid(column=1, row=5, sticky=E, padx=5)
 
-        # assinatura antiga
-        # Label(self.painel, text="Criado por: Raziel e Palf", font="Helvetica 7 bold",
-        #     bg="lightgrey").grid(row=7, column=1, sticky=SE)
-
         # assinatura animada
-        img0 = PhotoImage(file="./recursos/rimg0.png")
-        b0 = Label(self.painel, text="Criado por: Raziel e Palf", font="Helvetica 7 bold", bg="lightgrey", image=img0)
+        img0 = PhotoImage(file="./recursos/assinatura.png")
+        b0 = Label(self.painel, bg="lightgrey", image=img0)
 
-        b0.grid(row=7, column=1, sticky=SE)
+        b0.grid(row=7, column=1, sticky=SE, pady=5)
 
         self.painel.mainloop()  # responsável por manter a painel aberta
         # FIM PAINEL CABOT --------------------------------------------------
@@ -241,16 +263,17 @@ class App:
                 criptografar()
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
-            self.info_txt.config(text="Tente de novo...", font="Helvetica 9 bold", bg="lightgrey", fg="red")
+            self.info_txt.config(text="Tente de novo...", font=fonte_painel, fg="red", bg=cor_cinza_escuro)
             raise
 
     def puxar_nota(self):
         try:
-            self.botao_fechar.config(text='Aguarde...', relief=SUNKEN, bg="#292625", command='')
-            self.botao_todos.config(text='Aguarde...', relief=SUNKEN, bg="#292625", command='')
-            self.botao_puxar.config(text='Aguarde...', relief=SUNKEN, bg="#292625", command='')
-            self.botao_atualizar.config(text='Aguarde...', relief=SUNKEN, bg="#292625", command='')
-            # self.botao_fechar.update()
+            self.info_txt.config(text="Aguarde...", font=fonte_painel, bg=cor_cinza_escuro, fg=cor_preto)
+            # remove a função dos botões até concluir a operação
+            self.botao_fechar.config(command='')
+            self.botao_todos.config(command='')
+            self.botao_puxar.config(command='')
+            self.botao_atualizar.config(command='')
             # Inicio Lógica de 'puxada de nota'
             curso_txt = open('cursos.txt', 'r')
             curso_lista = curso_txt.readlines()
@@ -389,34 +412,30 @@ class App:
                                 break
         except OSError as err:
             print("OS error:", err)
-            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font="Helvetica 9 bold",
-                                 bg=cor5, fg="red")
+            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font=fonte_painel,
+                                 bg=cor_cinza_escuro, fg="red")
             self.botoes()
         except ValueError as err:
             print("ValueError:", err)
-            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font="Helvetica 9 bold",
-                                 bg=cor5, fg="red")
+            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font=fonte_painel,
+                                 bg=cor_cinza_escuro, fg="red")
             self.botoes()
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
-            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font="Helvetica 9 bold",
-                                 bg=cor5, fg="red")
+            self.info_txt.config(text="Erro, selecione novamente ou reinicie o sistema", font=fonte_painel,
+                                 bg=cor_cinza_escuro, fg="red")
             self.botoes()
             raise
-        self.info_txt.config(text="Notas puxadas com sucesso!", font="Helvetica 9 bold", bg=cor5, fg=cor2)
+        self.info_txt.config(text="Notas puxadas com sucesso!", font=fonte_painel, bg=cor_cinza_escuro,
+                             fg=cor_verde)
         self.botoes()
 
-    # atualiza os botões
+    # devolve as funções para os botões, depois da operação
     def botoes(self):
-        self.botao_fechar.config(text="  Fechar Sistema  ", command=self.sair, bg=cor3, fg=cor1,
-                                 font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
-        self.botao_puxar.config(text="Puxar Selecionado", command=self.alterar_txt, bg=cor2, fg=cor1,
-                                font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
-        self.botao_todos.config(text="Puxar Todos", command=self.redefinir_txt_puxar, bg="#292625",
-                                fg=cor1, font="Helvetica 9 bold", width=18, relief=RAISED, overrelief=RIDGE)
-        self.botao_atualizar.config(text=" Redefinir lista", image=self.img_redefinir,
-                                    compound=tkinter.LEFT, command=self.redefinir_txt, bg=cor5, fg="black",
-                                    font="Helvetica 9 bold", relief=RAISED, overrelief=RIDGE)
+        self.botao_fechar.config(command=self.sair)
+        self.botao_puxar.config(command=self.alterar_txt)
+        self.botao_todos.config(command=self.redefinir_txt_puxar)
+        self.botao_atualizar.config(command=self.redefinir_txt)
 
     # def responsável por fechar as dependências e encerrar o sistema- obviamente
     def sair(self):
@@ -450,8 +469,8 @@ class App:
         lista_atualizada = open('cursos.txt', 'r')
         listbox_atualizado = lista_atualizada.readlines()
         lista_atualizada.close()
-        self.selecionados.__init__(self.frame_scrollbar, font="Helvetica 10", height=20, width=75, bd=0,
-                                   selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor0,
+        self.selecionados.__init__(self.frame_scrollbar, font=fonte_listbox, height=20, width=75, bd=0,
+                                   selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor_roxo,
                                    activestyle='none', yscrollcommand=self.scrollbar.set)
         # config´s scrollbar
         self.scrollbar.config(command=self.selecionados.yview)
@@ -460,8 +479,8 @@ class App:
         for elementos_atualizados in listbox_atualizado:
             self.selecionados.insert(END, elementos_atualizados)
         self.selecionados.delete(0, last=None)
-        self.selecionados.grid(row=2, column=1, padx=5, pady=5)
-        self.info_txt.config(text='Lista redefinida!', font="Helvetica 9 bold", bg=cor5, fg=cor2)
+        self.selecionados.grid(row=3, column=1, padx=5, pady=5)
+        self.info_txt.config(text='Lista redefinida!', font=fonte_painel, bg=cor_cinza_escuro, fg=cor_preto)
 
     # def responsável pela restauração do txt e chamada do puxar nota
     def redefinir_txt_puxar(self):
@@ -477,8 +496,8 @@ class App:
         lista_atualizada = open('cursos.txt', 'r')
         listbox_atualizado = lista_atualizada.readlines()
         lista_atualizada.close()
-        self.selecionados.__init__(self.frame_scrollbar, font="Helvetica 10", height=20, width=75, bd=0,
-                                   selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor0,
+        self.selecionados.__init__(self.frame_scrollbar, font=fonte_listbox, height=20, width=75, bd=0,
+                                   selectmode=tkinter.MULTIPLE, cursor="plus", selectbackground=cor_roxo,
                                    activestyle='none', yscrollcommand=self.scrollbar.set)
         # config´s scrollbar
         self.scrollbar.grid()
@@ -486,7 +505,7 @@ class App:
         for elementos_atualizados in listbox_atualizado:
             self.selecionados.insert(END, elementos_atualizados)
         self.selecionados.delete(0, last=None)
-        self.selecionados.grid(row=2, column=1, padx=5, pady=5)
+        self.selecionados.grid(row=3, column=1, padx=5, pady=5)
         thread = Thread(target=self.puxar_nota)
         thread.start()
 
